@@ -24,9 +24,9 @@ class SecurityHeaders
 
             // Content Security Policy
             'Content-Security-Policy' => "default-src 'self'; " .
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net unpkg.com cdn.tailwindcss.com; " .
-                "style-src 'self' 'unsafe-inline' fonts.googleapis.com cdn.jsdelivr.net cdn.tailwindcss.com; " .
-                "font-src 'self' fonts.gstatic.com; " .
+                "script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net unpkg.com cdn.tailwindcss.com cdnjs.cloudflare.com; " .
+                "style-src 'self' 'unsafe-inline' fonts.googleapis.com fonts.bunny.net cdn.jsdelivr.net cdn.tailwindcss.com cdnjs.cloudflare.com; " .
+                "font-src 'self' fonts.gstatic.com fonts.bunny.net cdnjs.cloudflare.com data:; " .
                 "img-src 'self' data: https:; " .
                 "connect-src 'self'; " .
                 "frame-ancestors 'none';",

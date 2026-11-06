@@ -60,9 +60,8 @@
 
 # GZIP Compression
 <IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
-    AddType application/font/woff2 .woff2
-    AddEncoding gzip .svg .css .js .woff2
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json application/xml image/svg+xml
+    AddType font/woff2 .woff2
 </IfModule>
 
 # Prevent access to sensitive files
