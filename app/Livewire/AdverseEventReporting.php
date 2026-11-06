@@ -5,6 +5,7 @@ namespace App\Livewire;
 use App\Mail\AdverseEventSubmittedMail;
 use App\Models\AdverseEventReport;
 use App\Models\Product;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Livewire\Component;
@@ -447,6 +448,25 @@ class AdverseEventReporting extends Component
 
         $this->submitted = true;
         $this->submittedReference = $report->reference_number;
+    }
+
+    public function downloadPdf()
+    {
+        if (!$this->submittedReference) {
+            return;
+        }
+
+        $report = AdverseEventReport::where('reference_number', $this->submittedReference)->firstOrFail();
+
+        $pdf = Pdf::loadView('livewire.adverse-event-confirmation-pdf', [
+            'report' => $report,
+            'generatedAt' => now()->format('Y-m-d H:i:s'),
+        ]);
+
+        return response()->streamDownload(
+            fn() => print($pdf->output()),
+            'confirmation-' . $report->reference_number . '.pdf'
+        );
     }
 
     public function startNewReport(): void

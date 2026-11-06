@@ -171,6 +171,12 @@
                             </td>
                             <td class="whitespace-nowrap px-4 py-4 text-right text-sm font-medium">
                                 <button type="button"
+                                        wire:click="downloadPdf({{ $report->id }})"
+                                        title="Download Case PDF"
+                                        class="inline-flex items-center px-2.5 py-1.5 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs transition mr-1">
+                                    <i class="fas fa-file-pdf text-red-600"></i>
+                                </button>
+                                <button type="button"
                                         wire:click="viewReport({{ $report->id }})"
                                         class="inline-flex items-center px-3 py-1.5 rounded-lg bg-indigo-50 text-indigo-700 hover:bg-indigo-100 font-semibold text-xs transition">
                                     <i class="fas fa-eye mr-1.5"></i> View Case
@@ -375,9 +381,9 @@
                         </button>
 
                         <div class="flex items-center gap-3">
-                            <button type="button" onclick="window.print()"
-                                    class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold">
-                                <i class="fas fa-print mr-1.5"></i> Print Case
+                            <button type="button" wire:click="downloadPdf({{ $selectedReport->id }})"
+                                    class="inline-flex items-center px-4 py-2 rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 text-xs font-semibold shadow-sm">
+                                <i class="fas fa-file-pdf mr-1.5 text-red-600"></i> Download PDF
                             </button>
                             <button type="button" wire:click="closeModal"
                                     class="inline-flex items-center px-5 py-2 rounded-lg bg-gray-800 text-white hover:bg-gray-900 text-xs font-semibold">

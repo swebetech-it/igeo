@@ -132,9 +132,9 @@
                 </p>
 
                 <div class="mt-8 flex flex-wrap justify-center gap-4">
-                    <button type="button" onclick="window.print()" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
-                        <span class="material-symbols-outlined text-lg">print</span>
-                        Print Confirmation
+                    <button type="button" wire:click="downloadPdf" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-300 dark:border-slate-700 text-sm font-bold text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition shadow-sm">
+                        <span class="material-symbols-outlined text-lg text-emerald-600">download</span>
+                        Download PDF
                     </button>
                     <button type="button" wire:click="startNewReport" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-background-dark text-white dark:bg-primary dark:text-background-dark text-sm font-bold hover:opacity-90 transition">
                         <span class="material-symbols-outlined text-lg">add_circle</span>

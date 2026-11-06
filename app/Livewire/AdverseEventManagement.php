@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\AdverseEventReport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -133,6 +134,26 @@ class AdverseEventManagement extends Component
             'message' => "Report {$ref} deleted.",
             'type' => 'success',
         ]);
+    }
+
+    public function downloadPdf(?int $id = null)
+    {
+        $reportId = $id ?? $this->selectedReport?->id;
+        if (!$reportId) {
+            return null;
+        }
+
+        $report = AdverseEventReport::with('reviewer')->findOrFail($reportId);
+
+        $pdf = Pdf::loadView('livewire.adverse-event-report-pdf', [
+            'report' => $report,
+            'generatedAt' => now()->format('Y-m-d H:i:s'),
+        ]);
+
+        return response()->streamDownload(
+            fn() => print($pdf->output()),
+            'adverse-event-' . $report->reference_number . '.pdf'
+        );
     }
 
     public function exportCsv(): StreamedResponse
