@@ -1,0 +1,37 @@
+# iGEO Website Robots Configuration
+# Allow all search engines to crawl public content
+
+User-agent: *
+Allow: /
+Allow: /public/
+Allow: /blogs
+Allow: /gallery
+Allow: /experiences
+Allow: /documentation
+Allow: /clients
+Allow: /careers
+Allow: /team
+Allow: /about
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /dashboard/
+Disallow: /login
+Disallow: /register
+Disallow: /storage/
+Disallow: /vendor/
+Disallow: /config/
+Disallow: /*.pdf$
+
+# Specific disallows for common spam crawlers
+User-agent: AhrefsBot
+Disallow: /
+
+User-agent: SemrushBot
+Disallow: /
+
+# Sitemap location
+Sitemap: https://{{ env('APP_DOMAIN', 'localhost') }}/sitemap.xml
+
+# Crawl delay (optional - allows crawlers to space out requests)
+Crawl-delay: 1

@@ -1,0 +1,82 @@
+<IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
+    RewriteEngine On
+
+    # Handle Authorization Header
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Handle X-XSRF-Token Header
+    RewriteCond %{HTTP:x-xsrf-token} .
+    RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
+
+    # Redirect Trailing Slashes If Not A Folder...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_URI} (.+)/$
+    RewriteRule ^ %1 [L,R=301]
+
+    # Send Requests To Front Controller...
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteRule ^ index.php [L]
+</IfModule>
+
+# SEO & Performance Optimization Headers
+<IfModule mod_headers.c>
+    # Cache busting for static assets (1 month)
+    <FilesMatch "\\.(jpg|jpeg|png|gif|ico|webp|svg)$">
+        Header set Cache-Control "max-age=2592000, public, immutable"
+        Header unset Pragma
+    </FilesMatch>
+
+    # CSS and JavaScript (1 month with versioning)
+    <FilesMatch "\\.(css|js)$">
+        Header set Cache-Control "max-age=2592000, public"
+    </FilesMatch>
+
+    # Fonts (1 year)
+    <FilesMatch "\\.(woff|woff2|ttf|otf|eot)$">
+        Header set Cache-Control "max-age=31536000, public, immutable"
+    </FilesMatch>
+
+    # HTML - Don't cache (must revalidate)
+    <FilesMatch "\\.(html|htm)$">
+        Header set Cache-Control "max-age=0, public, must-revalidate"
+    </FilesMatch>
+
+    # Default cache policy
+    Header set Cache-Control "max-age=3600, public"
+
+    # Security Headers for SEO and safety
+    Header set X-UA-Compatible "IE=edge"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+    Header set X-XSS-Protection "1; mode=block"
+    Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# GZIP Compression
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+    AddType application/font/woff2 .woff2
+    AddEncoding gzip .svg .css .js .woff2
+</IfModule>
+
+# Prevent access to sensitive files
+<FilesMatch "(composer\.json|composer\.lock|\.env|\.env\..+|\.git)">
+    Deny from all
+</FilesMatch>
+
+# Set default character encoding for SEO
+AddDefaultCharset UTF-8
+AddType 'text/html; charset=UTF-8' .html
+
+# Enable HTTPS
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTPS} off
+    RewriteCond %{HTTP:X-Forwarded-Proto} !https
+    RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
