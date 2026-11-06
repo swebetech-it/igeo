@@ -13,6 +13,7 @@ class User extends Authenticatable
     use HasFactory, Notifiable;
 
     // Role constants
+    const ROLE_SUPERADMIN = 'superadmin';
     const ROLE_ADMIN = 'admin';
     const ROLE_MANAGER = 'manager';
     const ROLE_FINANCE = 'finance';
@@ -54,11 +55,19 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user has superadmin role
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === self::ROLE_SUPERADMIN || $this->email === 'info@igeo.co.tz';
+    }
+
+    /**
      * Check if user has admin role
      */
     public function isAdmin(): bool
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role === self::ROLE_ADMIN || $this->isSuperAdmin();
     }
 
     /**
@@ -90,6 +99,9 @@ class User extends Authenticatable
      */
     public function hasRole(array $roles): bool
     {
+        if ($this->isSuperAdmin()) {
+            return true;
+        }
         return in_array($this->role, $roles);
     }
 
@@ -99,6 +111,7 @@ class User extends Authenticatable
     public static function getRoles(): array
     {
         return [
+            self::ROLE_SUPERADMIN => 'Super Administrator',
             self::ROLE_ADMIN => 'Administrator',
             self::ROLE_MANAGER => 'Manager',
             self::ROLE_FINANCE => 'Finance Officer',

@@ -14,6 +14,7 @@ class RolesTableSeeder extends Seeder
     public function run(): void
     {
         $roles = [
+            ['name' => 'superadmin', 'description' => 'Super Administrator with full access to all features'],
             ['name' => 'admin', 'description' => 'System Administrator with full access'],
             ['name' => 'manager', 'description' => 'Manager with access to most features'],
             ['name' => 'finance', 'description' => 'Finance Officer with financial access'],

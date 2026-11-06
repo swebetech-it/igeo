@@ -250,6 +250,9 @@ class EmployeeManagement extends Component
         
         // Map role names to User model constants
         switch (strtolower($role->name)) {
+            case 'superadmin':
+            case 'super admin':
+                return User::ROLE_SUPERADMIN;
             case 'admin':
                 return User::ROLE_ADMIN;
             case 'manager':

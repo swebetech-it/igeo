@@ -15,6 +15,7 @@ class PermissionRoleTableSeeder extends Seeder
     public function run(): void
     {
         // Get all roles
+        $superadmin = Role::where('name', 'superadmin')->first();
         $admin = Role::where('name', 'admin')->first();
         $manager = Role::where('name', 'manager')->first();
         $finance = Role::where('name', 'finance')->first();
@@ -23,7 +24,10 @@ class PermissionRoleTableSeeder extends Seeder
         // Get all permissions
         $permissions = Permission::all();
         
-        // Assign all permissions to admin
+        // Assign all permissions to superadmin and admin
+        if ($superadmin) {
+            $superadmin->permissions()->sync($permissions->pluck('id'));
+        }
         if ($admin) {
             $admin->permissions()->sync($permissions->pluck('id'));
         }

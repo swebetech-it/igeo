@@ -21,6 +21,11 @@ class RoleMiddleware
 
         $user = auth()->user();
         
+        // Superadmin has access to all roles
+        if ($user->isSuperAdmin()) {
+            return $next($request);
+        }
+
         // If no roles specified, allow access
         if (empty($roles)) {
             return $next($request);

@@ -14,36 +14,29 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create admin user
-        $admin = User::updateOrCreate(
-            ['email' => 'admin@igeo.co.tz'],
-            [
-                'name' => 'DSS Admin',
-                'email' => 'admin@igeo.co.tz',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'role' => User::ROLE_ADMIN,
-            ]
-        );
+        // Create or update Super Admin: info@igeo.co.tz
+        $superAdmin = User::firstOrNew(['email' => 'info@igeo.co.tz']);
+        $superAdmin->name = $superAdmin->name ?: 'iGEO Super Admin';
+        if (!$superAdmin->exists) {
+            $superAdmin->password = Hash::make('password');
+        }
+        $superAdmin->email_verified_at = $superAdmin->email_verified_at ?: now();
+        $superAdmin->role = User::ROLE_SUPERADMIN;
+        $superAdmin->save();
 
-        // Create iGEO Admin user
-        $igeoAdmin = User::updateOrCreate(
-            ['email' => 'info@igeo.co.tz'],
-            [
-                'name' => 'iGEO Admin',
-                'email' => 'info@igeo.co.tz',
-                'password' => Hash::make('password'),
-                'email_verified_at' => now(),
-                'role' => User::ROLE_ADMIN,
-            ]
-        );
+        // Create or update Admin user: admin@igeo.co.tz
+        $admin = User::firstOrNew(['email' => 'admin@igeo.co.tz']);
+        $admin->name = $admin->name ?: 'iGEO Admin';
+        if (!$admin->exists) {
+            $admin->password = Hash::make('password');
+        }
+        $admin->email_verified_at = $admin->email_verified_at ?: now();
+        $admin->role = User::ROLE_ADMIN;
+        $admin->save();
 
-    
         $this->command->info('Users seeded successfully!');
         $this->command->info('Login credentials:');
-        $this->command->info('Admin: admin@igeo.co.tz / password');
-        $this->command->info('iGEO Admin: info@igeo.co.tz / password');
-        $this->command->info('Demo: demo@igeo.co.tz / demo123');
-        $this->command->info('Test: test@example.com / password');
+        $this->command->info('Super Admin: info@igeo.co.tz / password (if newly created)');
+        $this->command->info('Admin: admin@igeo.co.tz / password (if newly created)');
     }
 }
