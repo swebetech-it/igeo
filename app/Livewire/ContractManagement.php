@@ -283,10 +283,20 @@ class ContractManagement extends Component
     {
         $contract = Contract::with(['project', 'client', 'creator'])->findOrFail($id);
         
+        $filename = $contract->contract_number . '.pdf';
         $pdf = Pdf::loadView('contracts.pdf', compact('contract'));
-        return response()->streamDownload(function () use ($pdf) {
-            echo $pdf->stream();
-        }, $contract->contract_number . '.pdf');
+
+        return response()->streamDownload(
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            $filename,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ],
+            'attachment'
+        );
     }
 
     public function viewSignatureHistory($id)

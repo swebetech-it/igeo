@@ -95,10 +95,19 @@ class FinancialReports extends Component
             'generatedAt' => now()->format('Y-m-d H:i:s')
         ];
 
+        $filename = 'financial-report-' . now()->format('Y-m-d') . '.pdf';
         $pdf = Pdf::loadView('livewire.financial-reports-pdf', $data);
+
         return response()->streamDownload(
-            fn() => print($pdf->output()),
-            'financial-report-' . now()->format('Y-m-d') . '.pdf'
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            $filename,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ],
+            'attachment'
         );
     }
 

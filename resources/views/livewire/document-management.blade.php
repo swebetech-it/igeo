@@ -128,8 +128,11 @@
                                         </td>
                                         <td>
                                             <div class="flex">
-                                                <a href="{{ $doc->file_path }}" target="_blank" class="admin-action-btn admin-action-btn-view">
+                                                <a href="{{ $doc->file_path }}" target="_blank" class="admin-action-btn admin-action-btn-view" title="View Document">
                                                     <i class="fas fa-eye"></i>
+                                                </a>
+                                                <a href="{{ $doc->file_path }}" download="{{ $doc->title }}" class="admin-action-btn admin-action-btn-secondary ml-1" title="Download Document">
+                                                    <i class="fas fa-download"></i>
                                                 </a>
                                                 <button wire:click="edit({{ $doc->id }})" class="admin-action-btn admin-action-btn-edit ml-1">
                                                     <i class="fas fa-edit"></i>

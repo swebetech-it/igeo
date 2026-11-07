@@ -150,9 +150,18 @@ class AdverseEventManagement extends Component
             'generatedAt' => now()->format('Y-m-d H:i:s'),
         ]);
 
+        $filename = 'adverse-event-' . $report->reference_number . '.pdf';
+
         return response()->streamDownload(
-            fn() => print($pdf->output()),
-            'adverse-event-' . $report->reference_number . '.pdf'
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            $filename,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ],
+            'attachment'
         );
     }
 

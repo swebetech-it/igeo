@@ -108,6 +108,9 @@
                                         <button wire:click="edit({{ $contract->id }})" class="admin-action-btn admin-action-btn-edit" type="button">
                                             <i class="fas fa-edit"></i>
                                         </button>
+                                        <button wire:click="downloadContract({{ $contract->id }})" class="admin-action-btn admin-action-btn-secondary ml-1" type="button" title="Download Contract PDF">
+                                            <i class="fas fa-file-pdf text-red-600"></i>
+                                        </button>
                                         <button wire:click="openSignatureModal({{ $contract->id }})" class="admin-action-btn admin-action-btn-success ml-1" type="button">
                                             <i class="fas fa-signature"></i>
                                         </button>

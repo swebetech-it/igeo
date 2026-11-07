@@ -92,10 +92,19 @@ class ResourceReports extends Component
             'generatedAt' => now()->format('Y-m-d H:i:s')
         ];
 
+        $filename = 'resource-report-' . now()->format('Y-m-d') . '.pdf';
         $pdf = Pdf::loadView('livewire.resource-reports-pdf', $data);
+
         return response()->streamDownload(
-            fn() => print($pdf->output()),
-            'resource-report-' . now()->format('Y-m-d') . '.pdf'
+            function () use ($pdf) {
+                echo $pdf->output();
+            },
+            $filename,
+            [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            ],
+            'attachment'
         );
     }
 
