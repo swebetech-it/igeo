@@ -133,16 +133,19 @@
 </div>
 
 <!-- CTA Section -->
-<section class="py-24 px-6 lg:px-20 bg-background-dark relative overflow-hidden text-center border-t border-white/5">
-    <div class="absolute inset-0 bg-primary/5"></div>
+<section class="py-24 px-6 lg:px-20 bg-[#0b1d33] relative overflow-hidden text-center border-t border-white/10">
+    <div class="absolute inset-0 bg-emerald-500/5"></div>
     <div class="max-w-4xl mx-auto relative z-10">
-        <h2 class="text-3xl md:text-5xl font-black text-white mb-8">Ready to Partner With Us?</h2>
+        <h2 class="text-3xl md:text-5xl font-extrabold text-white mb-8">Ready to Partner With Us?</h2>
         <div class="flex flex-wrap justify-center gap-4">
-            <a href="{{ route('public.team') }}" class="flex items-center gap-2 h-14 px-8 bg-primary text-background-dark font-bold rounded-xl hover:scale-105 transition-transform">
+            <a href="{{ route('public.services') }}#consultation" class="flex items-center gap-2 h-14 px-8 bg-emerald-500 text-[#0b1d33] font-extrabold rounded-xl hover:bg-emerald-400 transition-all">
+                Request Consultation <span class="material-symbols-outlined">event_available</span>
+            </a>
+            <a href="{{ route('public.team') }}" class="flex items-center gap-2 h-14 px-8 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all">
                 Meet The Team <span class="material-symbols-outlined">group</span>
             </a>
-            <a href="{{ route('home') }}#contact" class="flex items-center gap-2 h-14 px-8 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all">
-                Contact Us <span class="material-symbols-outlined">mail</span>
+            <a href="{{ route('public.gallery') }}" class="flex items-center gap-2 h-14 px-8 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-xl hover:bg-white/20 transition-all">
+                Project Gallery <span class="material-symbols-outlined">photo_library</span>
             </a>
         </div>
     </div>

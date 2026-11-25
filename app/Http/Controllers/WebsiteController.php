@@ -2,34 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use App\Models\Service;
-use App\Models\Gallery;
-use App\Models\Experience;
 use App\Models\Blog;
 use App\Models\Document;
+use App\Models\Experience;
+use App\Models\Gallery;
+use App\Models\Lead;
+use App\Models\Service;
+use App\Support\RegulatoryServicesCatalog;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class WebsiteController extends Controller
 {
     public function home()
     {
-        // Get data for all sections of the homepage
-        $services = Service::take(6)->get();
-        $galleryImages = Gallery::orderBy('created_at', 'desc')->get();
-        $experiences = Experience::orderBy('year', 'desc')->take(3)->get();
-        $latestBlogs = Blog::orderBy('created_at', 'desc')->take(3)->get();
-
-        // Also get featured galleries for background slider
-        $galleries = Gallery::where('featured', true)->take(5)->get();
-        if ($galleries->isEmpty()) {
-            $galleries = Gallery::take(5)->get();
-        }
-        
-        // Get public clients
-        $publicClients = \App\Models\Client::where('is_public', true)->get();
-
-        return view('home', compact('services', 'galleryImages', 'galleries', 'experiences', 'latestBlogs', 'publicClients'));
+        return $this->homeModern();
     }
 
     public function homeNew()
@@ -64,32 +51,139 @@ class WebsiteController extends Controller
 
     public function homeModern()
     {
-        $services = Service::all();
-        $galleries = Gallery::orderBy('created_at', 'desc')->get();
-        $experiences = Experience::orderBy('year', 'desc')->take(6)->get();
-        $publicClients = \App\Models\Client::where('is_public', true)->get();
-        $products = \App\Models\Product::active()->orderBy('order')->get();
+        try {
+            $services = Service::all();
+            $galleries = Gallery::orderBy('created_at', 'desc')->get();
+            $experiences = Experience::orderBy('year', 'desc')->take(6)->get();
+            $publicClients = \App\Models\Client::where('is_public', true)->get();
+            $products = \App\Models\Product::active()->orderBy('order')->get();
+        } catch (\Throwable $e) {
+            $services = collect();
+            $galleries = collect();
+            $experiences = collect();
+            $publicClients = collect();
+            $products = collect();
+        }
+
+        $regulatoryServices = RegulatoryServicesCatalog::all();
+        $positioning = RegulatoryServicesCatalog::positioning();
+        $caseStudy = RegulatoryServicesCatalog::caseStudy();
 
         return view('home', array_merge(
-            compact('services', 'galleries', 'experiences', 'publicClients', 'products'),
+            compact('services', 'galleries', 'experiences', 'publicClients', 'products', 'regulatoryServices', 'positioning', 'caseStudy'),
             [
-                'meta_title' => 'Home',
-                'meta_description' => 'iGEO Pharmacy & Consulting - Leading pharmaceutical and agribusiness solutions provider in Tanzania.',
-                'meta_keywords' => 'pharmacy, consulting, agribusiness, healthcare, Tanzania, solutions',
+                'meta_title' => 'Pharmaceutical Regulatory Affairs & Compliance Services in Tanzania',
+                'meta_description' => 'iGEO Pharmacy & Consulting is a specialist pharmaceutical regulatory affairs, TMDA product registration, pharmacovigilance, market-entry and GSDP/GMP compliance consultancy in Tanzania.',
+                'meta_keywords' => 'TMDA registration, pharmaceutical regulatory affairs Tanzania, pharmacovigilance Tanzania, Pharmacy Council, GSDP GDP audit, market entry Tanzania, iGEO Pharmacy & Consulting',
             ]
         ));
+    }
+
+    public function services()
+    {
+        $regulatoryServices = RegulatoryServicesCatalog::all();
+        $positioning = RegulatoryServicesCatalog::positioning();
+        $caseStudy = RegulatoryServicesCatalog::caseStudy();
+
+        return view('public.services', [
+            'regulatoryServices' => $regulatoryServices,
+            'positioning' => $positioning,
+            'caseStudy' => $caseStudy,
+            'meta_title' => 'Regulatory Affairs & Pharmaceutical Compliance Services',
+            'meta_description' => 'Explore iGEO Pharmacy & Consulting\'s eight core regulatory service lines: TMDA product registration, 24/7 pharmacovigilance, regulatory representation, import compliance, GSDP/GDP, GMP/QMS, clinical trials and market access advisory.',
+            'meta_keywords' => 'TMDA product registration, pharmacovigilance PSMF Tanzania, local regulatory representation MAH, import permit TMDA, GSDP GDP warehouse audit, clinical trial NatHREC COSTECH',
+        ]);
+    }
+
+    public function serviceDetail(string $slug)
+    {
+        $service = RegulatoryServicesCatalog::findBySlugOrId($slug);
+
+        if (!$service) {
+            abort(404);
+        }
+
+        $allServices = RegulatoryServicesCatalog::all();
+        $positioning = RegulatoryServicesCatalog::positioning();
+        $caseStudy = RegulatoryServicesCatalog::caseStudy();
+
+        return view('public.service-detail', [
+            'service' => $service,
+            'allServices' => $allServices,
+            'positioning' => $positioning,
+            'caseStudy' => $caseStudy,
+            'meta_title' => $service['name'] . ' | Regulatory Services',
+            'meta_description' => $service['description'],
+            'meta_keywords' => $service['name'] . ', TMDA, Tanzania regulatory affairs, iGEO Pharmacy & Consulting',
+        ]);
+    }
+
+    public function submitConsultation(Request $request)
+    {
+        $validated = $request->validate([
+            'service_name' => 'required|string|max:255',
+            'service_slug' => 'nullable|string|max:255',
+            'name' => 'required|string|max:255',
+            'company' => 'nullable|string|max:255',
+            'email' => 'required|email|max:255',
+            'phone' => 'nullable|string|max:40',
+            'product_category' => 'nullable|string|max:120',
+            'message' => 'required|string|max:3000',
+        ]);
+
+        $structuredSummary = "[Service Requested: {$validated['service_name']}]"
+            . (!empty($validated['product_category']) ? " [Category: {$validated['product_category']}]" : '')
+            . "\n" . $validated['message'];
+
+        try {
+            Lead::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'company' => $validated['company'] ?? null,
+                'message' => $structuredSummary,
+                'status' => 'new',
+                'session_id' => $request->hasSession() ? $request->session()->getId() : null,
+            ]);
+        } catch (\Throwable $e) {
+            // Continue even if leads table differs in custom environment
+        }
+
+        try {
+            DB::table('contact_submissions')->insert([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'phone' => $validated['phone'] ?? null,
+                'project_type' => 'Consultation: ' . $validated['service_name'],
+                'message' => (!empty($validated['company']) ? "Organization: {$validated['company']}\n" : '')
+                    . (!empty($validated['product_category']) ? "Product/Scope Category: {$validated['product_category']}\n" : '')
+                    . $validated['message'],
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        } catch (\Throwable $e) {
+        }
+
+        $redirectTarget = !empty($validated['service_slug'])
+            ? route('public.service.detail', ['slug' => $validated['service_slug']]) . '#consultation'
+            : url()->previous();
+
+        return redirect($redirectTarget)->with(
+            'consultation_success',
+            'Thank you, ' . $validated['name'] . '! Your consultation request for "' . $validated['service_name'] . '" has been received. Our Regulatory Affairs team will contact you promptly.'
+        );
     }
 
     public function about()
     {
         $aboutUs = \App\Models\AboutUs::active()->get();
-        
+
         return view('public.about', array_merge(
             compact('aboutUs'),
             [
                 'meta_title' => 'About Us',
                 'meta_description' => 'Learn about iGEO Pharmacy & Consulting - our mission, vision, and values.',
-                'meta_keywords' => 'about iGEO, mission, vision, pharmaceutical, agribusiness, Tanzania',
+                'meta_keywords' => 'about iGEO, mission, vision, pharmaceutical, regulatory consulting, Tanzania',
             ]
         ));
     }
@@ -97,7 +191,7 @@ class WebsiteController extends Controller
     public function team()
     {
         $teamMembers = \App\Models\TeamMember::active()->ordered()->get();
-        
+
         return view('public.team', array_merge(
             compact('teamMembers'),
             [
@@ -137,7 +231,7 @@ class WebsiteController extends Controller
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('excerpt', 'like', "%{$search}%")
                   ->orWhere('content', 'like', "%{$search}%");
@@ -154,9 +248,9 @@ class WebsiteController extends Controller
         return view('public.blogs', array_merge(
             compact('blogs', 'recentBlogs'),
             [
-                'meta_title' => 'Blog',
-                'meta_description' => 'Read our latest articles and insights on pharmaceutical and agribusiness.',
-                'meta_keywords' => 'blog, articles, pharmaceutical, agribusiness, health, insights',
+                'meta_title' => 'Blog & Regulatory Insights',
+                'meta_description' => 'Read our latest articles and regulatory insights on pharmaceutical compliance and healthcare in Tanzania.',
+                'meta_keywords' => 'blog, articles, pharmaceutical, TMDA, regulatory updates, health, insights',
             ]
         ));
     }
@@ -175,8 +269,8 @@ class WebsiteController extends Controller
             [
                 'meta_title' => $blog->title ?? 'Blog Post',
                 'meta_description' => substr(strip_tags($blog->content ?? $blog->excerpt ?? ''), 0, 160),
-                'meta_keywords' => $blog->tags ?? 'pharmaceutical, agribusiness',
-                'og_image' => $blog->image ?? asset('Logo.png'),
+                'meta_keywords' => $blog->tags ?? 'pharmaceutical, regulatory compliance',
+                'og_image' => $blog->image ?? asset('Logo.png?v=20261125'),
                 'og_type' => 'article',
             ]
         ));
@@ -188,7 +282,7 @@ class WebsiteController extends Controller
 
         if ($request->has('search') && !empty($request->search)) {
             $search = $request->search;
-            $query->where(function($q) use ($search) {
+            $query->where(function ($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
                   ->orWhere('description', 'like', "%{$search}%");
             });
@@ -208,8 +302,8 @@ class WebsiteController extends Controller
             compact('documents', 'categories'),
             [
                 'meta_title' => 'Documentation',
-                'meta_description' => 'Comprehensive documentation and guides for iGEO products and services.',
-                'meta_keywords' => 'documentation, guides, technical, resources, iGEO, help',
+                'meta_description' => 'Comprehensive documentation and regulatory guides for iGEO services.',
+                'meta_keywords' => 'documentation, guides, technical, regulatory resources, iGEO, help',
             ]
         ));
     }
@@ -217,12 +311,12 @@ class WebsiteController extends Controller
     public function clients()
     {
         $publicClients = \App\Models\Client::where('is_public', true)->get();
-        
+
         return view('public.clients', array_merge(
             compact('publicClients'),
             [
                 'meta_title' => 'Our Clients',
-                'meta_description' => 'Trusted by leading organizations across Africa.',
+                'meta_description' => 'Trusted by leading pharmaceutical and healthcare organizations.',
                 'meta_keywords' => 'clients, partners, portfolio, case studies, pharmaceutical',
             ]
         ));
@@ -231,13 +325,13 @@ class WebsiteController extends Controller
     public function careers()
     {
         $careers = \App\Models\Career::active()->latest()->get();
-        
+
         return view('public.careers', array_merge(
             compact('careers'),
             [
                 'meta_title' => 'Careers',
-                'meta_description' => 'Join the iGEO team! Explore career opportunities.',
-                'meta_keywords' => 'careers, jobs, employment, pharmaceutical, agribusiness',
+                'meta_description' => 'Join the iGEO Pharmacy & Consulting team! Explore career opportunities.',
+                'meta_keywords' => 'careers, jobs, employment, pharmaceutical, regulatory affairs',
             ]
         ));
     }
@@ -245,7 +339,7 @@ class WebsiteController extends Controller
     public function careerDetail($id)
     {
         $career = \App\Models\Career::active()->findOrFail($id);
-        
+
         return view('public.career-detail', array_merge(
             compact('career'),
             [

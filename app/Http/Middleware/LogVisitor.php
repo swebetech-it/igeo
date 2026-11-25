@@ -2,12 +2,11 @@
 
 namespace App\Http\Middleware;
 
-
+use App\Models\Visitor;
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Jenssegers\Agent\Agent;
-use App\Models\Visitor;
+use Symfony\Component\HttpFoundation\Response;
 
 class LogVisitor
 {
@@ -19,32 +18,39 @@ class LogVisitor
     public function handle(Request $request, Closure $next): Response
     {
         $ip = $request->ip();
-        $agent = new Agent();
-        $device = $agent->device();
-        $platform = $agent->platform();
-        $browser = $agent->browser();
 
-        // Use a free IP geolocation API (ip-api.com)
-        $country = null;
-        $city = null;
-        try {
-            $geo = @json_decode(file_get_contents("http://ip-api.com/json/{$ip}?fields=status,country,city"), true);
-            if ($geo && ($geo['status'] ?? null) === 'success') {
-                $country = $geo['country'] ?? null;
-                $city = $geo['city'] ?? null;
+        if (!app()->runningUnitTests() && !in_array($ip, ['127.0.0.1', '::1', null], true)) {
+            try {
+                $agent = new Agent();
+                $device = $agent->device();
+                $platform = $agent->platform();
+                $browser = $agent->browser();
+
+                $country = null;
+                $city = null;
+                $ctx = stream_context_create([
+                    'http' => [
+                        'timeout' => 1.5,
+                    ],
+                ]);
+                $raw = @file_get_contents("http://ip-api.com/json/{$ip}?fields=status,country,city", false, $ctx);
+                $geo = $raw ? @json_decode($raw, true) : null;
+                if ($geo && ($geo['status'] ?? null) === 'success') {
+                    $country = $geo['country'] ?? null;
+                    $city = $geo['city'] ?? null;
+                }
+
+                Visitor::create([
+                    'ip' => $ip,
+                    'country' => $country,
+                    'city' => $city,
+                    'device' => $device,
+                    'platform' => $platform,
+                    'browser' => $browser,
+                ]);
+            } catch (\Throwable $e) {
+                // Never block page rendering if visitor analytics fails
             }
-        } catch (\Exception $e) {}
-
-        // Only log if not a local IP
-        if ($ip !== '127.0.0.1' && $ip !== '::1') {
-            Visitor::create([
-                'ip' => $ip,
-                'country' => $country,
-                'city' => $city,
-                'device' => $device,
-                'platform' => $platform,
-                'browser' => $browser,
-            ]);
         }
 
         return $next($request);

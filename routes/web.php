@@ -38,8 +38,13 @@ Route::get('/radical-design', function () {
 Route::get('/asymmetrical-design', function () {
     return view('asymmetrical-design');
 })->name('asymmetrical.design');
+
 Route::post('/contact', [WebsiteController::class, 'contact'])->name('contact.submit');
+Route::post('/consultation-request', [WebsiteController::class, 'submitConsultation'])->name('consultation.submit');
+
 Route::get('/about', [WebsiteController::class, 'about'])->name('public.about');
+Route::get('/services', [WebsiteController::class, 'services'])->name('public.services');
+Route::get('/services/{slug}', [WebsiteController::class, 'serviceDetail'])->name('public.service.detail');
 Route::get('/team', [WebsiteController::class, 'team'])->name('public.team');
 
 // Public Blog routes
@@ -99,10 +104,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/employees', EmployeeManagement::class)->name('employees');
         Route::get('/roles', RoleManagement::class)->name('roles');
         Route::get('/permissions', PermissionManagement::class)->name('permissions');
-        
+
         // Advanced Analytics Dashboard
         Route::get('/analytics', AnalyticsDashboard::class)->name('analytics');
-        
+
         // Contract Management & E-Signatures
         Route::get('/contracts', ContractManagement::class)->name('contracts');
 
@@ -116,7 +121,7 @@ Route::middleware('auth')->group(function () {
 
         // Pharmacovigilance / Adverse Event Management
         Route::get('/adverse-events', App\Livewire\AdverseEventManagement::class)->name('adverse-events');
-        
+
         // Test route
         Route::get('/test-employee', function () {
             return view('test-employee');
@@ -126,7 +131,6 @@ Route::middleware('auth')->group(function () {
         Route::get('/test-buttons', function () {
             return view('test-buttons');
         })->name('test.buttons');
-
     });
 });
 

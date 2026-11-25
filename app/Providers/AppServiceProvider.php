@@ -2,9 +2,10 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\View;
 use App\Models\Service;
+use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,14 +22,24 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Share services data with all views
+        // Share services data safely once per request across views
         View::composer('*', function ($view) {
-            $view->with('services', Service::orderBy('name')->get());
+            $services = once(function () {
+                try {
+                    return Service::orderBy('name')->get();
+                } catch (\Throwable $e) {
+                    return collect();
+                }
+            });
+
+            if (!array_key_exists('services', $view->getData())) {
+                $view->with('services', $services);
+            }
         });
-        
+
         // Force HTTPS in production
         if (config('app.env') === 'production') {
-            \Illuminate\Support\Facades\URL::forceScheme('https');
+            URL::forceScheme('https');
         }
     }
 }

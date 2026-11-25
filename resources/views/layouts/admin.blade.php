@@ -26,12 +26,10 @@
                         <!-- Logo -->
                         <div class="flex-shrink-0 flex items-center">
                             <a href="{{ route('dashboard') }}" class="flex items-center space-x-3">
-                                <div class="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-building text-white text-lg"></i>
-                                </div>
+                                <img src="{{ asset('Logo-emblem.png?v=20261125') }}" alt="iGEO Logo" class="w-10 h-10 object-contain">
                                 <div>
                                     <h1 class="text-xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">iGEO</h1>
-                                    <p class="text-xs text-slate-500 -mt-1">Content Management</p>
+                                    <p class="text-xs text-slate-500 -mt-1">Pharmacy & Consulting</p>
                                 </div>
                             </a>
                         </div>
