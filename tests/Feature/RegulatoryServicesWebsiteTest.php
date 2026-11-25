@@ -18,7 +18,8 @@ class RegulatoryServicesWebsiteTest extends TestCase
         $response = $this->get('/');
 
         $response->assertStatus(200);
-        $response->assertSee('Logo-emblem.png?v=20261125');
+        $response->assertSee('Logo-header.png?v=20261125b');
+        $response->assertDontSee('Pharmacy &amp; Consulting</span>', false);
         $response->assertSee('Plus+Jakarta+Sans', false);
         $response->assertSee('Services');
         $response->assertSee('Media &amp; Project Gallery', false);

@@ -111,9 +111,9 @@ Route::get('/schema/organization.json', function () {
     $schema = [
         '@context' => 'https://schema.org',
         '@type' => 'Organization',
-        'name' => config('app.name', 'iGEO Pharmacy & Consulting'),
+        'name' => config('app.name', 'IGEO'),
         'url' => url('/'),
-        'logo' => asset('Logo.png?v=20261125'),
+        'logo' => asset('Logo.png?v=20261125b'),
         'description' => 'Specialist pharmaceutical regulatory affairs, market-entry and compliance consultancy supporting manufacturers, MAHs, importers and healthcare institutions in Tanzania.',
         'sameAs' => [
             'https://www.facebook.com/igeo',

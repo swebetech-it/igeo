@@ -9,28 +9,28 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     
     <!-- SEO Meta Tags -->
-    <title>{{ config('app.name', 'iGEO PHARMACY & CONSULTING') }} | @yield('title', $meta_title ?? 'Pharmaceutical Regulatory Affairs & Compliance Services')</title>
+    <title>IGEO | @yield('title', $meta_title ?? 'Pharmaceutical Regulatory Affairs & Compliance Services')</title>
     <meta name="description" content="@yield('meta_description', $meta_description ?? 'iGEO Pharmacy & Consulting - Specialist pharmaceutical regulatory affairs, market-entry and compliance consultancy in Tanzania')"/>
     <meta name="keywords" content="@yield('meta_keywords', $meta_keywords ?? 'TMDA registration, pharmaceutical regulatory affairs Tanzania, pharmacovigilance, Pharmacy Council, GSDP GDP, iGEO Pharmacy & Consulting')"/>
-    <meta name="author" content="iGEO Pharmacy & Consulting"/>
+    <meta name="author" content="IGEO"/>
     <meta name="robots" content="index, follow"/>
     <link rel="canonical" href="{{ url()->current() }}"/>
     
     <!-- Open Graph Meta Tags for Social Sharing -->
-    <meta property="og:site_name" content="iGEO Pharmacy & Consulting"/>
-    <meta property="og:title" content="@yield('og_title', $meta_title ?? 'iGEO Pharmacy & Consulting')"/>
+    <meta property="og:site_name" content="IGEO"/>
+    <meta property="og:title" content="@yield('og_title', $meta_title ?? 'IGEO')"/>
     <meta property="og:description" content="@yield('og_description', $meta_description ?? 'Specialist pharmaceutical regulatory affairs, market-entry and compliance consultancy in Tanzania')"/>
     <meta property="og:url" content="{{ url()->current() }}"/>
     <meta property="og:type" content="@yield('og_type', 'website')"/>
-    <meta property="og:image" content="@yield('og_image', asset('Logo.png?v=20261125'))"/>
+    <meta property="og:image" content="@yield('og_image', asset('Logo.png?v=20261125b'))"/>
     <meta property="og:image:width" content="640"/>
     <meta property="og:image:height" content="640"/>
     
     <!-- Twitter Card Tags -->
     <meta name="twitter:card" content="summary_large_image"/>
-    <meta name="twitter:title" content="@yield('twitter_title', $meta_title ?? 'iGEO Pharmacy & Consulting')"/>
-    <meta name="twitter:description" content="@yield('twitter_description', $meta_description ?? 'iGEO Pharmacy & Consulting - Regulatory Affairs & Compliance')"/>
-    <meta name="twitter:image" content="@yield('twitter_image', asset('Logo.png?v=20261125'))"/>
+    <meta name="twitter:title" content="@yield('twitter_title', $meta_title ?? 'IGEO')"/>
+    <meta name="twitter:description" content="@yield('twitter_description', $meta_description ?? 'IGEO - Regulatory Affairs & Compliance')"/>
+    <meta name="twitter:image" content="@yield('twitter_image', asset('Logo.png?v=20261125b'))"/>
     
     <!-- Additional SEO Tags -->
     <meta name="language" content="English"/>
@@ -47,9 +47,9 @@
         {
             "@@context": "https://schema.org",
             "@@type": "Organization",
-            "name": "iGEO Pharmacy & Consulting",
+            "name": "IGEO",
             "url": "{{ url('/') }}",
-            "logo": "{{ asset('Logo.png?v=20261125') }}",
+            "logo": "{{ asset('Logo.png?v=20261125b') }}",
             "description": "Specialist pharmaceutical regulatory affairs, market-entry and compliance consultancy supporting manufacturers, MAHs, importers and healthcare institutions in Tanzania.",
             "sameAs": [
                 "https://www.facebook.com/igeo",
@@ -166,18 +166,14 @@
     <!-- Navigation -->
     <header x-data="{ mobileMenuOpen: false, mobileServicesOpen: false, mobileAboutOpen: false }" class="sticky top-0 z-50 w-full border-b border-slate-200/80 dark:border-gray-800/70 bg-white/95 dark:bg-background-dark/95 backdrop-blur-md shadow-sm">
         <div class="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-10 py-3.5">
-            <!-- Brand Logo & Lockup (Updated Nov 14 Eagle Emblem + Clean Arrangement) -->
-            <a href="{{ route('home') }}" class="flex items-center gap-3.5 group cursor-pointer shrink-0">
-                <div class="relative flex h-12 w-12 sm:h-13 sm:w-13 items-center justify-center rounded-full bg-white p-0.5 shadow-sm ring-1 ring-slate-200/80 transition-transform duration-200 group-hover:scale-105">
-                    <img src="{{ asset('Logo-emblem.png?v=20261125') }}" alt="iGEO Pharmacy & Consulting Logo" class="h-11 w-11 sm:h-12 sm:w-12 object-contain">
-                </div>
-                <div class="flex flex-col justify-center">
-                    <span class="font-heading text-xl sm:text-[22px] font-extrabold tracking-tight text-[#0b1d33] dark:text-white leading-none">
-                        iGEO
-                    </span>
-                    <span class="mt-1 text-[10.5px] sm:text-[11px] font-bold uppercase tracking-[0.15em] text-emerald-700 dark:text-primary leading-none">
-                        Pharmacy &amp; Consulting
-                    </span>
+            <!-- Brand Logo (Exact Nov 14 Eagle + IGEO without Pharmacy & Consulting) -->
+            <a href="{{ route('home') }}" class="flex items-center gap-3 group cursor-pointer shrink-0">
+                <img src="{{ asset('Logo-header.png?v=20261125b') }}" alt="IGEO Logo" class="h-11 sm:h-12 w-auto object-contain transition-transform duration-200 group-hover:scale-105 dark:hidden">
+                <div class="hidden dark:flex items-center gap-3">
+                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-white p-0.5 shadow-sm">
+                        <img src="{{ asset('Logo-emblem.png?v=20261125b') }}" alt="IGEO Logo" class="h-10 w-10 object-contain">
+                    </div>
+                    <span class="font-heading text-2xl font-extrabold tracking-wider text-white leading-none">IGEO</span>
                 </div>
             </a>
 
@@ -410,12 +406,9 @@
             <div class="lg:col-span-4 space-y-5">
                 <a href="{{ route('home') }}" class="inline-flex items-center gap-3.5 group">
                     <div class="flex h-12 w-12 items-center justify-center rounded-full bg-white p-0.5 shadow-md">
-                        <img src="{{ asset('Logo-emblem.png?v=20261125') }}" alt="iGEO Logo" class="h-11 w-11 object-contain">
+                        <img src="{{ asset('Logo-emblem.png?v=20261125b') }}" alt="IGEO Logo" class="h-11 w-11 object-contain">
                     </div>
-                    <div>
-                        <h2 class="font-heading text-xl font-extrabold tracking-tight text-white leading-none">iGEO</h2>
-                        <p class="mt-1 text-[11px] font-bold uppercase tracking-[0.16em] text-emerald-400">Pharmacy &amp; Consulting</p>
-                    </div>
+                    <h2 class="font-heading text-2xl font-extrabold tracking-wider text-white leading-none">IGEO</h2>
                 </a>
                 <p class="text-sm leading-relaxed text-slate-300/90">
                     Specialist pharmaceutical regulatory affairs, market-entry and quality compliance consultancy supporting manufacturers, MAHs, importers, distributors and healthcare institutions across Tanzania.
@@ -487,7 +480,7 @@
         </div>
 
         <div class="max-w-7xl mx-auto mt-14 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-slate-400">
-            <p>© {{ date('Y') }} iGEO Pharmacy &amp; Consulting. All rights reserved.</p>
+            <p>© {{ date('Y') }} IGEO. All rights reserved.</p>
             <div class="flex flex-wrap justify-center gap-6">
                 <a class="text-emerald-400 hover:text-white transition-colors font-semibold" href="{{ route('public.adverse-event') }}">24/7 Pharmacovigilance</a>
                 <a class="hover:text-white transition-colors" href="{{ route('public.services') }}">Regulatory Services</a>

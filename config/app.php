@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'iGEO Pharmacy & Consulting'),
+    'name' => env('APP_NAME', 'IGEO'),
 
     /*
     |--------------------------------------------------------------------------
